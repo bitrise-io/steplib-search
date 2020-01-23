@@ -1,4 +1,4 @@
-# Bitrise Steplib search service
+# Bitrise Steplib Search service
 
 ## Description
 

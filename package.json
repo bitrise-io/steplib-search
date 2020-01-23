@@ -1,10 +1,10 @@
 {
-  "name": "@bitrise/steplib",
+  "name": "@bitrise/steplib-search",
   "version": "1.0.0",
   "description": "List and search steps for your Bitrise workflow",
-  "main": "dist/bitrise-steplib.cjs.js",
-  "module": "dist/bitrise-steplib.esm.js",
-  "browser": "dist/bitrise-steplib.umd.js",
+  "main": "dist/bitrise-steplib-search.cjs.js",
+  "module": "dist/bitrise-steplib-search.esm.js",
+  "browser": "dist/bitrise-steplib-search.umd.js",
   "scripts": {
     "build": "rollup -c",
     "commitlint": "commitlint",

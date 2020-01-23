@@ -10,7 +10,7 @@ export default [
   {
     input: 'src/index.ts',
     output: {
-      name: 'bitriseSteplib',
+      name: 'bitriseSteplibSearch',
       file: pkg.browser,
       format: 'umd'
     },
