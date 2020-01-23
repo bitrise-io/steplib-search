@@ -1,5 +1,5 @@
 {
-  "name": "bitrise-steplib",
+  "name": "@bitrise/steplib",
   "version": "1.0.0",
   "description": "List and search steps for your Bitrise workflow",
   "main": "dist/bitrise-steplib.cjs.js",
@@ -7,7 +7,9 @@
   "browser": "dist/bitrise-steplib.umd.js",
   "scripts": {
     "build": "rollup -c",
+    "commitlint": "commitlint",
     "dev": "rollup -c -w",
+    "semantic-release": "semantic-release",
     "test": "jest"
   },
   "author": "",
@@ -15,15 +17,29 @@
   "dependencies": {
     "algoliasearch": "^3.35.1"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@semantic-release/changelog": "^3.0.6",
+    "@semantic-release/git": "^8.0.0",
     "@types/algoliasearch": "^3.34.9",
     "@types/jest": "^24.9.0",
+    "husky": "^4.2.0",
     "jest": "^25.1.0",
     "rollup": "^1.29.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
+    "semantic-release": "^16.0.3",
     "ts-jest": "^25.0.0",
     "tslib": "^1.10.0",
     "typescript": "^3.7.5"
