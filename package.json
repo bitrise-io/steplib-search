@@ -1,0 +1,34 @@
+{
+  "name": "bitrise-steplib",
+  "version": "1.0.0",
+  "description": "List and search steps for your Bitrise workflow",
+  "main": "dist/bitrise-steplib.cjs.js",
+  "module": "dist/bitrise-steplib.esm.js",
+  "browser": "dist/bitrise-steplib.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "algoliasearch": "^3.35.1"
+  },
+  "devDependencies": {
+    "@types/algoliasearch": "^3.34.9",
+    "@types/jest": "^24.9.0",
+    "jest": "^25.1.0",
+    "rollup": "^1.29.1",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "ts-jest": "^25.0.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.5"
+  },
+  "files": [
+    "dist"
+  ]
+}
