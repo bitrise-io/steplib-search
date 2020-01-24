@@ -9,8 +9,9 @@ export default [
   // UMD
   {
     input: 'src/index.ts',
+    external: ['algoliasearch'],
     output: {
-      name: 'bitriseSteplibSearch',
+      name: 'StepLib',
       file: pkg.browser,
       format: 'umd'
     },
