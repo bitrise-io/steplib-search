@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/bitrise-io/steplib-search/compare/v1.1.0...v1.2.0) (2020-01-24)
+
+
+### Features
+
+* **scripts:** Added converter script ([a554bc7](https://github.com/bitrise-io/steplib-search/commit/a554bc786c9830133d6a384cacae4548b5a10625))
+
 # [1.1.0](https://github.com/bitrise-io/steplib-search/compare/v1.0.0...v1.1.0) (2020-01-24)
 
 
