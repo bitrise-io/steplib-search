@@ -8,12 +8,17 @@ export type SearchOptions = {
   algoliaOptions?: algoliasearch.QueryParameters;
 };
 
-const defaultOptions: algoliasearch.QueryParameters = {
+const defaultStepOptions: algoliasearch.QueryParameters = {
   query: '',
   attributesToRetrieve: ['csv'],
   attributesToHighlight: [],
   filters: 'is_latest:true',
   typoTolerance: false
+};
+
+const defaultInputOptions: algoliasearch.QueryParameters = {
+  ...defaultStepOptions,
+  attributesToRetrieve: ['csv', 'order']
 };
 
 export type Indices = {
@@ -58,17 +63,17 @@ export default class StepLib {
     includeInputs = false,
     algoliaOptions
   }: SearchOptions = {}): Promise<Step[]> {
-    const stepsPromise = this.browseAll(this.steps, query, {
-      ...defaultOptions,
+    const options = {
       filters: latestOnly ? 'is_latest:true' : '',
       ...algoliaOptions
-    });
+    };
+    const stepsPromise = this.browseAll(this.steps, query, { ...defaultStepOptions, ...options });
 
     if (!includeInputs) {
       return await stepsPromise;
     }
 
-    const inputsPromise = this.browseAll(this.inputs);
+    const inputsPromise = this.browseAll(this.inputs, query, { ...defaultInputOptions, ...options });
     const [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
 
     return steps.map(({ csv, ...rest }) => {
