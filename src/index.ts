@@ -3,20 +3,37 @@ import algoliasearch from 'algoliasearch';
 export type SearchOptions = {
   query?: string;
   latestOnly?: boolean;
+  stepIds?: string[];
   includeInputs?: boolean;
   algoliaOptions?: algoliasearch.QueryParameters;
 };
 
 const defaultOptions: algoliasearch.QueryParameters = {
-  // query: '',
+  query: '',
   attributesToRetrieve: ['csv'],
   attributesToHighlight: [],
-  filters: 'is_latest:true'
+  filters: 'is_latest:true',
+  typoTolerance: false
 };
 
 export type Indices = {
   stepIndex: string;
   inputsIndex: string;
+};
+
+export type Step = {
+  csv: string;
+  objectID: string;
+  inputs?: Inputs[];
+};
+
+export type Inputs = {
+  csv: string;
+  order: number;
+  is_latest: boolean;
+  opts: [Object];
+  ssh_rsa_private_key: string;
+  objectID: string;
 };
 
 export default class StepLib {
@@ -34,9 +51,41 @@ export default class StepLib {
     this.inputs = this.client.initIndex(inputsIndex);
   }
 
-  async list({ query = '', latestOnly = false, includeInputs = false, algoliaOptions }: SearchOptions = {}) {
-    return await new Promise(resolve => {
-      const browser = this.steps.browseAll(query, { ...defaultOptions, filters: latestOnly ? 'is_latest:true' : '' });
+  async list({
+    query = '',
+    latestOnly = false,
+    stepIds = [],
+    includeInputs = false,
+    algoliaOptions
+  }: SearchOptions = {}): Promise<Step[]> {
+    const stepsPromise = this.browseAll(this.steps, query, {
+      ...defaultOptions,
+      filters: latestOnly ? 'is_latest:true' : '',
+      ...algoliaOptions
+    });
+
+    if (!includeInputs) {
+      return await stepsPromise;
+    }
+
+    const inputsPromise = this.browseAll(this.inputs);
+    const [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
+
+    return steps.map(({ csv, ...rest }) => {
+      const stepInputs = inputs.filter(({ csv: _csv }) => _csv === csv).sort((a, b) => a.order - b.order);
+
+      return {
+        csv,
+        ...rest,
+        inputs: stepInputs
+      };
+    });
+  }
+
+  async browseAll(index: algoliasearch.Index, ...rest: any[]): Promise<any[]> {
+    return new Promise(resolve => {
+      const browser = index.browseAll(...rest);
+
       let result: any = [];
 
       browser.on('result', ({ hits }) => {

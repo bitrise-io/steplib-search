@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StepLib list list steps with inputs 1`] = `
+Array [
+  Object {
+    "csv": "activate-ssh-key@4.0.5",
+    "inputs": Array [
+      Object {
+        "csv": "activate-ssh-key@4.0.5",
+        "is_latest": true,
+        "objectID": "114733721",
+        "opts": Array [
+          [Function],
+        ],
+        "order": 0,
+        "ssh_rsa_private_key": "$SSH_RSA_PRIVATE_KEY",
+      },
+      Object {
+        "csv": "activate-ssh-key@4.0.5",
+        "is_latest": true,
+        "objectID": "114733731",
+        "opts": Array [
+          [Function],
+        ],
+        "order": 1,
+        "ssh_key_save_path": "$HOME/.ssh/bitrise_step_activate_ssh_key",
+      },
+    ],
+    "objectID": "114723561",
+  },
+  Object {
+    "csv": "cocoapods-install@1.10.1",
+    "inputs": Array [],
+    "objectID": "114726881",
+  },
+  Object {
+    "csv": "create-android-emulator@1.1.6",
+    "inputs": Array [],
+    "objectID": "114727601",
+  },
+  Object {
+    "csv": "codecov@1.1.6",
+    "inputs": Array [
+      Object {
+        "csv": "codecov@1.1.6",
+        "is_latest": true,
+        "objectID": "114733743",
+        "opts": Array [
+          [Function],
+        ],
+        "order": 0,
+        "ssh_key_save_path": "$HOME/.ssh/bitrise_step_activate_ssh_key",
+      },
+    ],
+    "objectID": "114727221",
+  },
+]
+`;
