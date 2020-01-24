@@ -5,9 +5,11 @@
   "main": "dist/bitrise-steplib-search.cjs.js",
   "module": "dist/bitrise-steplib-search.esm.js",
   "browser": "dist/bitrise-steplib-search.umd.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
+    "build": "yarn generate-declarations && rollup -c",
     "commitlint": "commitlint",
+    "generate-declarations": "tsc --declaration --esModuleInterop --emitDeclarationOnly --declarationDir dist  src/index.ts",
     "dev": "rollup -c -w",
     "semantic-release": "semantic-release",
     "test": "jest"
