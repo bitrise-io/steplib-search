@@ -9,6 +9,7 @@
   "scripts": {
     "build": "yarn generate-declarations && rollup -c",
     "commitlint": "commitlint",
+    "convert-spec-json": "node scripts/convert-spec-json",
     "generate-declarations": "tsc --declaration --esModuleInterop --emitDeclarationOnly --declarationDir dist  src/index.ts",
     "dev": "rollup -c -w",
     "semantic-release": "semantic-release",
