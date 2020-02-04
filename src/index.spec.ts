@@ -78,18 +78,21 @@ describe(StepLib, () => {
       stepBrowseEvent = jest.fn(),
       inputBrowseEvent = jest.fn(),
       browseAllSteps = jest.fn(() => ({ on: stepBrowseEvent })),
-      browseAllInputs = jest.fn(() => ({ on: inputBrowseEvent }));
+      browseAllInputs = jest.fn(() => ({ on: inputBrowseEvent })),
+      search = jest.fn();
+
     let onStepResult: (content: Pick<algoliasearch.BrowseResponse, 'hits'>) => {},
       onInputResult: (content: Pick<algoliasearch.BrowseResponse, 'hits'>) => {};
     let onStepEnd: () => {}, onInputEnd: () => {};
 
     beforeEach(() => {
-      [initIndexMock, stepBrowseEvent, inputBrowseEvent].forEach(mock => mock.mockRestore());
+      [initIndexMock, stepBrowseEvent, inputBrowseEvent, search].forEach(mock => mock.mockRestore());
 
       ((algoliasearch as any) as jest.Mock).mockImplementation(() => ({
         initIndex: initIndexMock
           .mockReturnValueOnce({
-            browseAll: browseAllSteps
+            browseAll: browseAllSteps,
+            search
           })
           .mockReturnValueOnce({ browseAll: browseAllInputs })
       }));
@@ -128,6 +131,28 @@ describe(StepLib, () => {
       onInputEnd();
 
       const hits = await listPromise;
+
+      expect(hits).toMatchSnapshot();
+    });
+
+    test('list steps by step id', async () => {
+      search.mockResolvedValueOnce({ hits: [{ latest: true, csv: 'without-csv@2.0.0' }] });
+      search.mockResolvedValueOnce({
+        hits: [
+          { latest: false, csv: 'with-csv@1.0.0' },
+          { latest: false, csv: 'with-csv@1.1.0' }
+        ]
+      });
+      const listPromise = steplib.list({ stepIds: ['without-csv', 'with-csv@1.0.0', 'with-csv@1.1.0'] });
+
+      const hits = await listPromise;
+
+      expect(stepBrowseEvent).toHaveBeenCalledTimes(0);
+      expect(search).toHaveBeenCalledTimes(2);
+
+      const [[{ filters: latestFilters }], [{ filters: exactFilters }]] = search.mock.calls;
+      expect(latestFilters).toBe('(id:without-csv) AND is_latest:true');
+      expect(exactFilters).toBe('csv:with-csv@1.0.0 OR csv:with-csv@1.1.0');
 
       expect(hits).toMatchSnapshot();
     });

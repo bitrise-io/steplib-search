@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`StepLib list list steps by step id 1`] = `
+Array [
+  Object {
+    "csv": "without-csv@2.0.0",
+    "latest": true,
+  },
+  Object {
+    "csv": "with-csv@1.0.0",
+    "latest": false,
+  },
+  Object {
+    "csv": "with-csv@1.1.0",
+    "latest": false,
+  },
+]
+`;
+
 exports[`StepLib list list steps with inputs 1`] = `
 Array [
   Object {

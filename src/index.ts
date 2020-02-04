@@ -29,10 +29,10 @@ export type Indices = {
 export type Step = {
   csv: string;
   objectID: string;
-  inputs?: Inputs[];
+  inputs?: StepInput[];
 };
 
-export type Inputs = {
+export type StepInput = {
   csv: string;
   order: number;
   is_latest: boolean;
@@ -67,13 +67,19 @@ export default class StepLib {
       filters: latestOnly ? 'is_latest:true' : '',
       ...algoliaOptions
     };
-    const stepsPromise = this.browseAll(this.steps, query, { ...defaultStepOptions, ...options });
+
+    let stepsPromise;
+    if (stepIds.length > 0) {
+      stepsPromise = this.searchSteps(stepIds, { ...defaultStepOptions, ...options });
+    } else {
+      stepsPromise = this.browseAll<Step>(this.steps, query, { ...defaultStepOptions, ...options });
+    }
 
     if (!includeInputs) {
       return await stepsPromise;
     }
 
-    const inputsPromise = this.browseAll(this.inputs, query, { ...defaultInputOptions, ...options });
+    const inputsPromise = this.browseAll<StepInput>(this.inputs, query, { ...defaultInputOptions, ...options });
     const [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
 
     return steps.map(({ csv, ...rest }) => {
@@ -87,7 +93,44 @@ export default class StepLib {
     });
   }
 
-  async browseAll(index: algoliasearch.Index, ...rest: any[]): Promise<any[]> {
+  async searchSteps(stepIds: string[], queryParams: object = {}): Promise<Step[]> {
+    const [latestSteps, exactVersionSteps] = stepIds.reduce(
+      ([latest, exactVersion], id) => {
+        if (id.includes('@')) {
+          return [latest, [...exactVersion, id]];
+        }
+
+        return [[...latest, id], exactVersion];
+      },
+      [[] as string[], [] as string[]]
+    );
+
+    let result: Step[] = [];
+
+    if (latestSteps.length > 0) {
+      console.log('Searching for latestSteps');
+      const { hits } = await this.steps.search({
+        ...queryParams,
+        filters: `(${latestSteps.map(id => `id:${id}`).join(' OR ')}) AND is_latest:true`
+      });
+
+      result = result.concat(hits);
+    }
+
+    if (exactVersionSteps.length > 0) {
+      console.log('Searching for exactVersionSteps');
+      const { hits } = await this.steps.search({
+        ...queryParams,
+        filters: exactVersionSteps.map(id => `csv:${id}`).join(' OR ')
+      });
+
+      result = result.concat(hits);
+    }
+
+    return result;
+  }
+
+  async browseAll<T>(index: algoliasearch.Index, ...rest: any[]): Promise<T[]> {
     return new Promise(resolve => {
       const browser = index.browseAll(...rest);
 
