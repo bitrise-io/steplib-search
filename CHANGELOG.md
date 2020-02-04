@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/bitrise-io/steplib-search/compare/v1.2.0...v1.3.0) (2020-02-04)
+
+
+### Features
+
+* **StepLib:** Ability to list specific step versions ([3ec9a59](https://github.com/bitrise-io/steplib-search/commit/3ec9a598fec1bb9cb3a45aaa1e3eb4b6ca949233))
+* **StepLib:** Ability to list specific step versions ([#5](https://github.com/bitrise-io/steplib-search/issues/5)) ([16c296b](https://github.com/bitrise-io/steplib-search/commit/16c296b82de0ba82b9266257bee3406d68edee27))
+
 # [1.2.0](https://github.com/bitrise-io/steplib-search/compare/v1.1.0...v1.2.0) (2020-01-24)
 
 
