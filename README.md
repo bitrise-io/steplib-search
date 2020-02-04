@@ -114,6 +114,50 @@ const allFlutterSteps: Step[] = await stepLib.list({
 
 ---
 
+List steps by id, you can include a version to get an exact version, or omit it to get the latest
+
+```ts
+const workflowSteps: Step[] = await stepLib.list({
+  stepIds: ['script', 'github-release@0.9.3', 'android-build@0.10.0'],
+  algoliaOptions: {
+    attributesToRetrieve: ['id', 'version', 'csv', 'is_latest']
+  }
+});
+```
+
+<details>
+<summary>Result</summary>
+<p>
+
+```js
+// workflowSteps
+[
+  {
+    "csv": "script@1.1.6",
+    "id": "script",
+    "version": "1.1.6",
+    "is_latest": true
+  },
+  {
+    "csv": "android-build@0.10.0",
+    "id": "android-build",
+    "version": "0.10.0",
+    "is_latest": true
+  },
+  {
+    "csv": "github-release@0.9.3",
+    "id": "github-release",
+    "version": "0.9.3",
+    "is_latest": false
+  }
+]
+```
+
+</p>
+</details>
+
+---
+
 With custom `algoliaOptions`, you can override any Algolia parameter
 
 ```ts
