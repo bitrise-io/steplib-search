@@ -75,26 +75,23 @@ describe(StepLib, () => {
   describe('list', () => {
     let steplib: StepLib;
     const initIndexMock = jest.fn(),
-      stepBrowseEvent = jest.fn(),
-      inputBrowseEvent = jest.fn(),
-      browseAllSteps = jest.fn(() => ({ on: stepBrowseEvent })),
-      browseAllInputs = jest.fn(() => ({ on: inputBrowseEvent })),
+      browseStepObjects = jest.fn(),
+      browseInputObjects = jest.fn(),
       search = jest.fn();
 
-    let onStepResult: (content: Pick<algoliasearch.BrowseResponse, 'hits'>) => {},
-      onInputResult: (content: Pick<algoliasearch.BrowseResponse, 'hits'>) => {};
-    let onStepEnd: () => {}, onInputEnd: () => {};
-
     beforeEach(() => {
-      [initIndexMock, stepBrowseEvent, inputBrowseEvent, search].forEach(mock => mock.mockRestore());
+      [initIndexMock, search, browseStepObjects, browseInputObjects].forEach(mock => mock.mockRestore());
 
       ((algoliasearch as any) as jest.Mock).mockImplementation(() => ({
         initIndex: initIndexMock
           .mockReturnValueOnce({
-            browseAll: browseAllSteps,
+            browseObjects: browseStepObjects,
             search
           })
-          .mockReturnValueOnce({ browseAll: browseAllInputs })
+          .mockReturnValueOnce({
+            browseObjects: browseInputObjects,
+            search
+          })
       }));
 
       steplib = new StepLib(appId, apiKey);
@@ -102,13 +99,12 @@ describe(StepLib, () => {
 
     test('list steps with default parameters', async () => {
       const listPromise = steplib.list();
-      expect(browseAllSteps).toBeCalledTimes(1);
-      expect(stepBrowseEvent).toBeCalledTimes(2);
-      [[, onStepResult], [, onStepEnd]] = stepBrowseEvent.mock.calls;
+      expect(browseStepObjects).toHaveBeenCalledTimes(1);
 
-      onStepResult({ hits: MOCK_STEP_VERSIONS.slice(0, 2) });
-      onStepResult({ hits: MOCK_STEP_VERSIONS.slice(2) });
-      onStepEnd();
+      const [[{ batch }]] = browseStepObjects.mock.calls;
+
+      batch(MOCK_STEP_VERSIONS.slice(0, 2));
+      batch(MOCK_STEP_VERSIONS.slice(2));
 
       const hits = await listPromise;
 
@@ -118,17 +114,14 @@ describe(StepLib, () => {
 
     test('list steps with inputs', async () => {
       const listPromise = steplib.list({ includeInputs: true });
-      expect(stepBrowseEvent).toBeCalledTimes(2);
-      expect(inputBrowseEvent).toBeCalledTimes(2);
+      expect(browseStepObjects).toHaveBeenCalledTimes(1);
+      expect(browseInputObjects).toHaveBeenCalledTimes(1);
 
-      [[, onStepResult], [, onStepEnd]] = stepBrowseEvent.mock.calls;
-      [[, onInputResult], [, onInputEnd]] = inputBrowseEvent.mock.calls;
+      const [[{ batch: stepBatch }]] = browseStepObjects.mock.calls;
+      const [[{ batch: inputBatch }]] = browseInputObjects.mock.calls;
 
-      onStepResult({ hits: MOCK_STEP_VERSIONS });
-      onInputResult({ hits: MOCK_STEP_INPUTS });
-
-      onStepEnd();
-      onInputEnd();
+      stepBatch(MOCK_STEP_VERSIONS);
+      inputBatch(MOCK_STEP_INPUTS);
 
       const hits = await listPromise;
 
@@ -147,10 +140,10 @@ describe(StepLib, () => {
 
       const hits = await listPromise;
 
-      expect(stepBrowseEvent).toHaveBeenCalledTimes(0);
+      expect(browseStepObjects).not.toHaveBeenCalled();
       expect(search).toHaveBeenCalledTimes(2);
 
-      const [[{ filters: latestFilters }], [{ filters: exactFilters }]] = search.mock.calls;
+      const [[, { filters: latestFilters }], [, { filters: exactFilters }]] = search.mock.calls;
       expect(latestFilters).toBe('(id:without-csv) AND is_latest:true');
       expect(exactFilters).toBe('csv:with-csv@1.0.0 OR csv:with-csv@1.1.0');
 
