@@ -80,8 +80,17 @@ export default class StepLib {
       return await stepsPromise;
     }
 
-    const inputsPromise = this.browseAll<StepInput>(this.inputs, query, { ...defaultInputOptions, ...options });
-    const [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
+    let inputsPromise, steps: Step[], inputs: StepInput[];
+
+    if (stepIds.length > 0) {
+      steps = await stepsPromise;
+
+      const filters = `(${steps.map(({ csv }) => `csv:${csv}`).join(' OR ')})`;
+      inputs = await this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query, filters });
+    } else {
+      inputsPromise = this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query });
+      [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
+    }
 
     return steps.map(({ csv, ...rest }) => {
       const stepInputs = inputs.filter(({ csv: _csv }) => _csv === csv).sort((a, b) => a.order - b.order);
