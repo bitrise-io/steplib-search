@@ -1,3 +1,20 @@
+# [2.0.0](https://github.com/bitrise-io/steplib-search/compare/v1.3.0...v2.0.0) (2020-02-06)
+
+
+### chore
+
+* **package:** Bump algoliasearch version ([7917dfb](https://github.com/bitrise-io/steplib-search/commit/7917dfb9228928bb73fa2f6040e86d76a0980a3c))
+
+
+### Performance Improvements
+
+* **inputs:** Only list related inputs ([a2795f1](https://github.com/bitrise-io/steplib-search/commit/a2795f1d5f3451301aa74a75f16b52cd5c05fb3d))
+
+
+### BREAKING CHANGES
+
+* **package:** algoliasearch major version changed
+
 # [1.3.0](https://github.com/bitrise-io/steplib-search/compare/v1.2.0...v1.3.0) (2020-02-04)
 
 
