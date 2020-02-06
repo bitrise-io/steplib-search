@@ -1,14 +1,15 @@
-import algoliasearch from 'algoliasearch';
+import algoliasearch, { SearchClient, SearchIndex } from 'algoliasearch';
+import { BrowseOptions, SearchOptions as AlgoliaSearchOptions, ObjectWithObjectID } from '@algolia/client-search';
 
 export type SearchOptions = {
   query?: string;
   latestOnly?: boolean;
   stepIds?: string[];
   includeInputs?: boolean;
-  algoliaOptions?: algoliasearch.QueryParameters;
+  algoliaOptions?: AlgoliaSearchOptions;
 };
 
-const defaultStepOptions: algoliasearch.QueryParameters = {
+const defaultStepOptions: AlgoliaSearchOptions = {
   query: '',
   attributesToRetrieve: ['csv'],
   attributesToHighlight: [],
@@ -16,7 +17,7 @@ const defaultStepOptions: algoliasearch.QueryParameters = {
   typoTolerance: false
 };
 
-const defaultInputOptions: algoliasearch.QueryParameters = {
+const defaultInputOptions: AlgoliaSearchOptions = {
   ...defaultStepOptions,
   attributesToRetrieve: ['csv', 'order']
 };
@@ -26,13 +27,13 @@ export type Indices = {
   inputsIndex: string;
 };
 
-export type Step = {
+export type Step = ObjectWithObjectID & {
   csv: string;
   objectID: string;
   inputs?: StepInput[];
 };
 
-export type StepInput = {
+export type StepInput = ObjectWithObjectID & {
   csv: string;
   order: number;
   is_latest: boolean;
@@ -42,9 +43,9 @@ export type StepInput = {
 };
 
 export default class StepLib {
-  private client: algoliasearch.Client;
-  private steps: algoliasearch.Index;
-  private inputs: algoliasearch.Index;
+  private client: SearchClient;
+  private steps: SearchIndex;
+  private inputs: SearchIndex;
 
   constructor(
     applicationID: string,
@@ -72,15 +73,24 @@ export default class StepLib {
     if (stepIds.length > 0) {
       stepsPromise = this.searchSteps(stepIds, { ...defaultStepOptions, ...options });
     } else {
-      stepsPromise = this.browseAll<Step>(this.steps, query, { ...defaultStepOptions, ...options });
+      stepsPromise = this.browseAll<Step>(this.steps, { ...defaultStepOptions, ...options, query });
     }
 
     if (!includeInputs) {
       return await stepsPromise;
     }
 
-    const inputsPromise = this.browseAll<StepInput>(this.inputs, query, { ...defaultInputOptions, ...options });
-    const [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
+    let inputsPromise, steps: Step[], inputs: StepInput[];
+
+    if (stepIds.length > 0) {
+      steps = await stepsPromise;
+
+      const filters = `(${steps.map(({ csv }) => `csv:${csv}`).join(' OR ')})`;
+      inputs = await this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query, filters });
+    } else {
+      inputsPromise = this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query });
+      [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
+    }
 
     return steps.map(({ csv, ...rest }) => {
       const stepInputs = inputs.filter(({ csv: _csv }) => _csv === csv).sort((a, b) => a.order - b.order);
@@ -108,41 +118,30 @@ export default class StepLib {
     let result: Step[] = [];
 
     if (latestSteps.length > 0) {
-      console.log('Searching for latestSteps');
-      const { hits } = await this.steps.search({
-        ...queryParams,
+      const { hits } = await this.steps.search('', {
         filters: `(${latestSteps.map(id => `id:${id}`).join(' OR ')}) AND is_latest:true`
       });
 
-      result = result.concat(hits);
+      result = result.concat((hits as any) as Step[]);
     }
 
     if (exactVersionSteps.length > 0) {
-      console.log('Searching for exactVersionSteps');
-      const { hits } = await this.steps.search({
+      const { hits } = await this.steps.search('', {
         ...queryParams,
         filters: exactVersionSteps.map(id => `csv:${id}`).join(' OR ')
       });
 
-      result = result.concat(hits);
+      result = result.concat((hits as any) as Step[]);
     }
 
     return result;
   }
 
-  async browseAll<T>(index: algoliasearch.Index, ...rest: any[]): Promise<T[]> {
-    return new Promise(resolve => {
-      const browser = index.browseAll(...rest);
+  async browseAll<T>(index: SearchIndex, options: AlgoliaSearchOptions & BrowseOptions<T>): Promise<T[]> {
+    let result: any = [];
 
-      let result: any = [];
+    await index.browseObjects({ ...options, batch: hits => (result = result.concat(hits)) });
 
-      browser.on('result', ({ hits }) => {
-        result = result.concat(hits);
-      });
-
-      browser.on('end', () => {
-        resolve(result);
-      });
-    });
+    return result;
   }
 }
