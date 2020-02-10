@@ -11,7 +11,7 @@ export type SearchOptions = {
 
 const defaultStepOptions: AlgoliaSearchOptions = {
   query: '',
-  attributesToRetrieve: ['csv'],
+  attributesToRetrieve: ['cvs'],
   attributesToHighlight: [],
   filters: 'is_latest:true',
   typoTolerance: false
@@ -19,7 +19,7 @@ const defaultStepOptions: AlgoliaSearchOptions = {
 
 const defaultInputOptions: AlgoliaSearchOptions = {
   ...defaultStepOptions,
-  attributesToRetrieve: ['csv', 'order']
+  attributesToRetrieve: ['cvs', 'order']
 };
 
 export type Indices = {
@@ -28,13 +28,13 @@ export type Indices = {
 };
 
 export type Step = ObjectWithObjectID & {
-  csv: string;
+  cvs: string;
   objectID: string;
   inputs?: StepInput[];
 };
 
 export type StepInput = ObjectWithObjectID & {
-  csv: string;
+  cvs: string;
   order: number;
   is_latest: boolean;
   opts: [Object];
@@ -85,18 +85,18 @@ export default class StepLib {
     if (stepIds.length > 0) {
       steps = await stepsPromise;
 
-      const filters = `(${steps.map(({ csv }) => `csv:${csv}`).join(' OR ')})`;
+      const filters = `(${steps.map(({ cvs }) => `cvs:${cvs}`).join(' OR ')})`;
       inputs = await this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query, filters });
     } else {
       inputsPromise = this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query });
       [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
     }
 
-    return steps.map(({ csv, ...rest }) => {
-      const stepInputs = inputs.filter(({ csv: _csv }) => _csv === csv).sort((a, b) => a.order - b.order);
+    return steps.map(({ cvs, ...rest }) => {
+      const stepInputs = inputs.filter(({ cvs: _cvs }) => _cvs === cvs).sort((a, b) => a.order - b.order);
 
       return {
-        csv,
+        cvs,
         ...rest,
         inputs: stepInputs
       };
@@ -128,7 +128,7 @@ export default class StepLib {
     if (exactVersionSteps.length > 0) {
       const { hits } = await this.steps.search('', {
         ...queryParams,
-        filters: exactVersionSteps.map(id => `csv:${id}`).join(' OR ')
+        filters: exactVersionSteps.map(id => `cvs:${id}`).join(' OR ')
       });
 
       result = result.concat((hits as any) as Step[]);
