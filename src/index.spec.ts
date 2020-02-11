@@ -3,15 +3,15 @@ import algoliasearch from 'algoliasearch';
 import StepLib, { Step } from '.';
 
 const MOCK_STEP_VERSIONS: Step[] = [
-  { csv: 'activate-ssh-key@4.0.5', objectID: '114723561' },
-  { csv: 'cocoapods-install@1.10.1', objectID: '114726881' },
-  { csv: 'create-android-emulator@1.1.6', objectID: '114727601' },
-  { csv: 'codecov@1.1.6', objectID: '114727221' }
+  { cvs: 'activate-ssh-key@4.0.5', objectID: '114723561' },
+  { cvs: 'cocoapods-install@1.10.1', objectID: '114726881' },
+  { cvs: 'create-android-emulator@1.1.6', objectID: '114727601' },
+  { cvs: 'codecov@1.1.6', objectID: '114727221' }
 ];
 
 const MOCK_STEP_INPUTS = [
   {
-    csv: 'activate-ssh-key@4.0.5',
+    cvs: 'activate-ssh-key@4.0.5',
     order: 0,
     is_latest: true,
     opts: [Object],
@@ -19,7 +19,7 @@ const MOCK_STEP_INPUTS = [
     objectID: '114733721'
   },
   {
-    csv: 'activate-ssh-key@4.0.5',
+    cvs: 'activate-ssh-key@4.0.5',
     order: 1,
     is_latest: true,
     opts: [Object],
@@ -27,7 +27,7 @@ const MOCK_STEP_INPUTS = [
     objectID: '114733731'
   },
   {
-    csv: 'codecov@1.1.6',
+    cvs: 'codecov@1.1.6',
     order: 0,
     is_latest: true,
     opts: [Object],
@@ -129,14 +129,14 @@ describe(StepLib, () => {
     });
 
     test('list steps by step id', async () => {
-      search.mockResolvedValueOnce({ hits: [{ latest: true, csv: 'without-csv@2.0.0' }] });
+      search.mockResolvedValueOnce({ hits: [{ latest: true, cvs: 'without-cvs@2.0.0' }] });
       search.mockResolvedValueOnce({
         hits: [
-          { latest: false, csv: 'with-csv@1.0.0' },
-          { latest: false, csv: 'with-csv@1.1.0' }
+          { latest: false, cvs: 'with-cvs@1.0.0' },
+          { latest: false, cvs: 'with-cvs@1.1.0' }
         ]
       });
-      const listPromise = steplib.list({ stepIds: ['without-csv', 'with-csv@1.0.0', 'with-csv@1.1.0'] });
+      const listPromise = steplib.list({ stepIds: ['without-cvs', 'with-cvs@1.0.0', 'with-cvs@1.1.0'] });
 
       const hits = await listPromise;
 
@@ -144,8 +144,8 @@ describe(StepLib, () => {
       expect(search).toHaveBeenCalledTimes(2);
 
       const [[, { filters: latestFilters }], [, { filters: exactFilters }]] = search.mock.calls;
-      expect(latestFilters).toBe('(id:without-csv) AND is_latest:true');
-      expect(exactFilters).toBe('csv:with-csv@1.0.0 OR csv:with-csv@1.1.0');
+      expect(latestFilters).toBe('(id:without-cvs) AND is_latest:true');
+      expect(exactFilters).toBe('cvs:with-cvs@1.0.0 OR cvs:with-cvs@1.1.0');
 
       expect(hits).toMatchSnapshot();
     });

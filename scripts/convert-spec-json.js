@@ -46,11 +46,11 @@ function convertSpecToRecords(stepList) {
     ({ steps, inputs }, [id, { versions, ...details }]) => {
       const { steps: s, inputs: i } = Object.entries(versions).reduce(
         ({ steps, inputs }, [version, { inputs: stepInputs = [], ...step }]) => {
-          const csv = `${id}@${version}`,
+          const cvs = `${id}@${version}`,
             isLatest = details.latest_version_number === version;
 
           const exctractedInputs = stepInputs.map((input, idx) => ({
-            csv,
+            cvs,
             order: idx,
             is_latest: isLatest,
             ...input
@@ -62,7 +62,7 @@ function convertSpecToRecords(stepList) {
               ...steps,
               {
                 ...details,
-                csv,
+                cvs,
                 id,
                 version,
                 is_latest: isLatest,

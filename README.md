@@ -36,13 +36,13 @@ const latestSteps: Step[] = await stepLib.list();
 // latestSteps
 [
   ...
-  { "csv": "activate-ssh-key@4.0.5" },
-  { "csv": "git-clone@4.0.18" },
-  { "csv": "git-clone@4.0.17" },
-  { "csv": "amazon-s3-deploy@3.5.8" },
-  { "csv": "project-scanner@3.3.1" },
-  { "csv": "project-scanner@3.3.0" },
-  { "csv": "carthage@3.2.2" },
+  { "cvs": "activate-ssh-key@4.0.5" },
+  { "cvs": "git-clone@4.0.18" },
+  { "cvs": "git-clone@4.0.17" },
+  { "cvs": "amazon-s3-deploy@3.5.8" },
+  { "cvs": "project-scanner@3.3.1" },
+  { "cvs": "project-scanner@3.3.0" },
+  { "cvs": "carthage@3.2.2" },
   ...
 ]
 ```
@@ -70,39 +70,39 @@ const allFlutterSteps: Step[] = await stepLib.list({
 [
   ...
   {
-    "csv": "flutter@0.0.9",
+    "cvs": "flutter@0.0.9",
     "inputs": [
-      { "csv": "flutter@0.0.9", "order": 0 },
-      { "csv": "flutter@0.0.9", "order": 1 },
-      { "csv": "flutter@0.0.9", "order": 2 }
+      { "cvs": "flutter@0.0.9", "order": 0 },
+      { "cvs": "flutter@0.0.9", "order": 1 },
+      { "cvs": "flutter@0.0.9", "order": 2 }
       ...
     ]
   },
   {
-    "csv": "flutter@0.0.8",
+    "cvs": "flutter@0.0.8",
     "inputs": [
-      { "csv": "flutter@0.0.8", "order": 0 },
-      { "csv": "flutter@0.0.8", "order": 1 },
-      { "csv": "flutter@0.0.8", "order": 2 }
+      { "cvs": "flutter@0.0.8", "order": 0 },
+      { "cvs": "flutter@0.0.8", "order": 1 },
+      { "cvs": "flutter@0.0.8", "order": 2 }
     ]
   },
   {
-    "csv": "flutter-test@0.9.1",
+    "cvs": "flutter-test@0.9.1",
     "inputs": [
-      { "csv": "flutter-test@0.9.1", "order": 0 },
-      { "csv": "flutter-test@0.9.1", "order": 1 }
+      { "cvs": "flutter-test@0.9.1", "order": 0 },
+      { "cvs": "flutter-test@0.9.1", "order": 1 }
     ]
   },
   {
-    "csv": "flutter-test@0.9.0",
+    "cvs": "flutter-test@0.9.0",
     "inputs": [
-      { "csv": "flutter-test@0.9.0", "order": 0 }
+      { "cvs": "flutter-test@0.9.0", "order": 0 }
     ]
   },
   {
-    "csv": "flutter-installer@0.9.2",
+    "cvs": "flutter-installer@0.9.2",
     "inputs": [
-      { "csv": "flutter-installer@0.9.2", "order": 0 }
+      { "cvs": "flutter-installer@0.9.2", "order": 0 }
     ]
   }
   ...
@@ -120,7 +120,7 @@ List steps by id, you can include a version to get an exact version, or omit it 
 const workflowSteps: Step[] = await stepLib.list({
   stepIds: ['script', 'github-release@0.9.3', 'android-build@0.10.0'],
   algoliaOptions: {
-    attributesToRetrieve: ['id', 'version', 'csv', 'is_latest']
+    attributesToRetrieve: ['id', 'version', 'cvs', 'is_latest']
   }
 });
 ```
@@ -133,19 +133,19 @@ const workflowSteps: Step[] = await stepLib.list({
 // workflowSteps
 [
   {
-    "csv": "script@1.1.6",
+    "cvs": "script@1.1.6",
     "id": "script",
     "version": "1.1.6",
     "is_latest": true
   },
   {
-    "csv": "android-build@0.10.0",
+    "cvs": "android-build@0.10.0",
     "id": "android-build",
     "version": "0.10.0",
     "is_latest": true
   },
   {
-    "csv": "github-release@0.9.3",
+    "cvs": "github-release@0.9.3",
     "id": "github-release",
     "version": "0.9.3",
     "is_latest": false
@@ -165,7 +165,7 @@ const allFlutterSteps: Step[] = await stepLib.list({
   query: 'react-native',
   latestOnly: false,
   algoliaOptions: {
-    attributesToRetrieve: ['id', 'version', 'csv', 'info']
+    attributesToRetrieve: ['id', 'version', 'cvs', 'info']
   }
 });
 ```
@@ -176,7 +176,7 @@ const allFlutterSteps: Step[] = await stepLib.list({
 ```json
 [
   {
-    "csv": "react-native-bundle@1.0.4",
+    "cvs": "react-native-bundle@1.0.4",
     "id": "react-native-bundle",
     "version": "1.0.4",
     "info": {
@@ -186,7 +186,7 @@ const allFlutterSteps: Step[] = await stepLib.list({
     }
   },
   {
-    "csv": "install-react-native@0.9.2",
+    "cvs": "install-react-native@0.9.2",
     "id": "install-react-native",
     "version": "0.9.2",
     "info": {
@@ -196,7 +196,7 @@ const allFlutterSteps: Step[] = await stepLib.list({
     }
   },
   {
-    "csv": "appcenter-codepush-release-react-native@0.0.2",
+    "cvs": "appcenter-codepush-release-react-native@0.0.2",
     "id": "appcenter-codepush-release-react-native",
     "version": "0.0.2",
     "info": {

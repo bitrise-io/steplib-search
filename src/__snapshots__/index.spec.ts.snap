@@ -3,15 +3,15 @@
 exports[`StepLib list list steps by step id 1`] = `
 Array [
   Object {
-    "csv": "without-csv@2.0.0",
+    "cvs": "without-cvs@2.0.0",
     "latest": true,
   },
   Object {
-    "csv": "with-csv@1.0.0",
+    "cvs": "with-cvs@1.0.0",
     "latest": false,
   },
   Object {
-    "csv": "with-csv@1.1.0",
+    "cvs": "with-cvs@1.1.0",
     "latest": false,
   },
 ]
@@ -20,10 +20,10 @@ Array [
 exports[`StepLib list list steps with inputs 1`] = `
 Array [
   Object {
-    "csv": "activate-ssh-key@4.0.5",
+    "cvs": "activate-ssh-key@4.0.5",
     "inputs": Array [
       Object {
-        "csv": "activate-ssh-key@4.0.5",
+        "cvs": "activate-ssh-key@4.0.5",
         "is_latest": true,
         "objectID": "114733721",
         "opts": Array [
@@ -33,7 +33,7 @@ Array [
         "ssh_rsa_private_key": "$SSH_RSA_PRIVATE_KEY",
       },
       Object {
-        "csv": "activate-ssh-key@4.0.5",
+        "cvs": "activate-ssh-key@4.0.5",
         "is_latest": true,
         "objectID": "114733731",
         "opts": Array [
@@ -46,20 +46,20 @@ Array [
     "objectID": "114723561",
   },
   Object {
-    "csv": "cocoapods-install@1.10.1",
+    "cvs": "cocoapods-install@1.10.1",
     "inputs": Array [],
     "objectID": "114726881",
   },
   Object {
-    "csv": "create-android-emulator@1.1.6",
+    "cvs": "create-android-emulator@1.1.6",
     "inputs": Array [],
     "objectID": "114727601",
   },
   Object {
-    "csv": "codecov@1.1.6",
+    "cvs": "codecov@1.1.6",
     "inputs": Array [
       Object {
-        "csv": "codecov@1.1.6",
+        "cvs": "codecov@1.1.6",
         "is_latest": true,
         "objectID": "114733743",
         "opts": Array [
