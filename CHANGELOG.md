@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/bitrise-io/steplib-search/compare/v2.0.0...v2.0.1) (2020-02-11)
+
+
+### Bug Fixes
+
+* **general:** Change `csv` to `cvs` :see_no_evil: ([3982d0e](https://github.com/bitrise-io/steplib-search/commit/3982d0e9ec2107a2c9d8373a25d0db4ef212eac7))
+
 # [2.0.0](https://github.com/bitrise-io/steplib-search/compare/v1.3.0...v2.0.0) (2020-02-06)
 
 
