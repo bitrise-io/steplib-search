@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/bitrise-io/steplib-search/compare/v2.0.1...v2.1.0) (2020-02-17)
+
+
+### Features
+
+* **filter:** Added projectTypes filter option ([2afb1c3](https://github.com/bitrise-io/steplib-search/commit/2afb1c3f2e950705d202214e7fe3dff5d43c29dd))
+
 ## [2.0.1](https://github.com/bitrise-io/steplib-search/compare/v2.0.0...v2.0.1) (2020-02-11)
 
 
