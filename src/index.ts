@@ -6,6 +6,7 @@ export type SearchOptions = {
   latestOnly?: boolean;
   stepIds?: string[];
   includeInputs?: boolean;
+  projectTypes?: string[];
   algoliaOptions?: AlgoliaSearchOptions;
 };
 
@@ -62,11 +63,25 @@ export default class StepLib {
     latestOnly = false,
     stepIds = [],
     includeInputs = false,
+    projectTypes = [],
     algoliaOptions
   }: SearchOptions = {}): Promise<Step[]> {
+    let filterList = latestOnly ? ['is_latest:true'] : [];
+
+    if (algoliaOptions?.filters) {
+      filterList.push(algoliaOptions.filters);
+    }
+
+    if (projectTypes && projectTypes.length > 0) {
+      const projectFilter = `(${projectTypes.map(t => `step.project_type_tags:${t}`).join(' OR ')})`;
+      filterList.push(projectFilter);
+    }
+
+    const filters = filterList.join(' AND ');
+
     const options = {
-      filters: latestOnly ? 'is_latest:true' : '',
-      ...algoliaOptions
+      ...algoliaOptions,
+      filters
     };
 
     let stepsPromise;

@@ -58,7 +58,7 @@ describe(StepLib, () => {
     expect(initIndex).toHaveBeenCalledWith('steplib_inputs');
   });
 
-  it('can set custom idex values', () => {
+  it('can set custom index values', () => {
     const stepIndex = 'some_step_index',
       inputsIndex = 'another_inputs_index';
     new StepLib(appId, apiKey, { stepIndex, inputsIndex });
@@ -148,6 +148,16 @@ describe(StepLib, () => {
       expect(exactFilters).toBe('cvs:with-cvs@1.0.0 OR cvs:with-cvs@1.1.0');
 
       expect(hits).toMatchSnapshot();
+    });
+
+    test('lists steps by project type', async () => {
+      steplib.list({ projectTypes: ['ios', 'android'] });
+
+      expect(browseStepObjects).toHaveBeenCalledWith(
+        expect.objectContaining({
+          filters: '(step.project_type_tags:ios OR step.project_type_tags:android)'
+        })
+      );
     });
   });
 });
