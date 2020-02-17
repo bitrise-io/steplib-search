@@ -158,10 +158,83 @@ const workflowSteps: Step[] = await stepLib.list({
 
 ---
 
+You can use `projectTypes` to speecify which platfrom you are looking for
+
+```ts
+const iosAndAndroidLatestSteps: Step[] = await stepLib.list({
+  latestOnly: true,
+  projectTypes: ['ios', 'android'],
+  attributesToRetrieve: ['cvs', 'step.project_type_tags']
+});
+```
+
+<details>
+<summary>Result</summary>
+<p>
+
+```js
+// iosAndAndroidLatestSteps
+[
+  ...
+  {
+    "cvs": "gradle-coveralls@1.0.1",
+    "step": {
+      "project_type_tags": [
+        "android"
+      ]
+    }
+  },
+  {
+    "cvs": "firebase-dsym-upload@1.0.1",
+    "step": {
+      "project_type_tags": [
+        "ios",
+        "xamarin",
+        "react-native"
+      ]
+    }
+  },
+  {
+    "cvs": "bitrise-step-icon-overlay@1.0.1",
+    "step": {
+      "project_type_tags": [
+        "ios",
+        "xamarin"
+      ]
+    }
+  },
+  {
+    "cvs": "appcenter-deploy-android@1.0.1",
+    "step": {
+      "project_type_tags": [
+        "android",
+        "react-native",
+        "flutter"
+      ]
+    }
+  },
+  {
+    "cvs": "detekt@1.0.0",
+    "step": {
+      "project_type_tags": [
+        "android"
+      ],
+    }
+  },
+  ...
+]
+
+```
+
+</p>
+</details>
+
+---
+
 With custom `algoliaOptions`, you can override any Algolia parameter
 
 ```ts
-const allFlutterSteps: Step[] = await stepLib.list({
+const customAlgoliaOptions: Step[] = await stepLib.list({
   query: 'react-native',
   latestOnly: false,
   algoliaOptions: {
@@ -173,7 +246,8 @@ const allFlutterSteps: Step[] = await stepLib.list({
 <summary>Result</summary>
 <p>
 
-```json
+```js
+// customAlgoliaOptions
 [
   {
     "cvs": "react-native-bundle@1.0.4",
