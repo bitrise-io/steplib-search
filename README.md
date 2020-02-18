@@ -285,6 +285,52 @@ const customAlgoliaOptions: Step[] = await stepLib.list({
 </p>
 </details>
 
+---
+
+You can leverage Algolia's fuzzy search
+
+```ts
+const fuzzySteps: Step[] = await stepLib.list({
+  query: 'Anbroid Ebulator',
+  latestOnly: true,
+  algoliaOptions: {
+    restrictSearchableAttributes: ['step.title'],
+    typoTolerance: true,
+    attributesToRetrieve: ['step.title', 'cvs']
+  }
+});
+```
+<details>
+<summary>Result</summary>
+<p>
+
+```js
+// fuzzySteps
+[
+  {
+    "cvs": "start-android-emulator@1.3.2",
+    "step": {
+      "title": "Start Android emulator"
+    }
+  },
+  {
+    "cvs": "create-android-emulator@1.1.6",
+    "step": {
+      "title": "Create Android emulator"
+    }
+  },
+  {
+    "cvs": "wait-for-android-emulator@1.0.4",
+    "step": {
+      "title": "Wait for Android emulator"
+    }
+  }
+]
+```
+
+</p>
+</details>
+
 ### In ES5 land
 
 Include these scripts

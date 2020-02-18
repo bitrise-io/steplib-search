@@ -100,6 +100,15 @@ describe(StepLib, () => {
     test('list steps with default parameters', async () => {
       const listPromise = steplib.list();
       expect(browseStepObjects).toHaveBeenCalledTimes(1);
+      expect(browseStepObjects).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: '',
+          attributesToRetrieve: ['cvs'],
+          attributesToHighlight: [],
+          typoTolerance: false,
+          restrictSearchableAttributes: ['id', 'cvs']
+        })
+      );
 
       const [[{ batch }]] = browseStepObjects.mock.calls;
 
