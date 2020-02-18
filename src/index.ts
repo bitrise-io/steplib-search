@@ -14,8 +14,8 @@ const defaultStepOptions: AlgoliaSearchOptions = {
   query: '',
   attributesToRetrieve: ['cvs'],
   attributesToHighlight: [],
-  filters: 'is_latest:true',
-  typoTolerance: false
+  typoTolerance: false,
+  restrictSearchableAttributes: ['id', 'cvs']
 };
 
 const defaultInputOptions: AlgoliaSearchOptions = {
@@ -156,7 +156,6 @@ export default class StepLib {
     let result: any = [];
 
     await index.browseObjects({ ...options, batch: hits => (result = result.concat(hits)) });
-
     return result;
   }
 }
