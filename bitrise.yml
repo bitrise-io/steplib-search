@@ -1,0 +1,20 @@
+format_version: "8"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: other
+workflows:
+  update-algolia:
+    envs:
+      - SPEC_JSON_PATH: '$SPEC_JSON_PATH'
+      - ALGOLIA_APP_ID: '$ALGOLIA_APP_ID'
+      - ALGOLIA_API_KEY: '$ALGOLIA_API_KEY'
+      - DRY_RUN: '$DRY_RUN'
+    steps:
+      - script@1.1.6:
+          title: Update algolia steps based on spec.json
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -ex
+
+                yarn install --prod
+                yarn update-algolia "$SPEC_JSON_PATH"
