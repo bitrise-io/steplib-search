@@ -23,23 +23,15 @@ Array [
     "cvs": "activate-ssh-key@4.0.5",
     "inputs": Array [
       Object {
-        "cvs": "activate-ssh-key@4.0.5",
-        "is_latest": true,
-        "objectID": "114733721",
         "opts": Array [
           [Function],
         ],
-        "order": 0,
         "ssh_rsa_private_key": "$SSH_RSA_PRIVATE_KEY",
       },
       Object {
-        "cvs": "activate-ssh-key@4.0.5",
-        "is_latest": true,
-        "objectID": "114733731",
         "opts": Array [
           [Function],
         ],
-        "order": 1,
         "ssh_key_save_path": "$HOME/.ssh/bitrise_step_activate_ssh_key",
       },
     ],
@@ -59,13 +51,9 @@ Array [
     "cvs": "codecov@1.1.6",
     "inputs": Array [
       Object {
-        "cvs": "codecov@1.1.6",
-        "is_latest": true,
-        "objectID": "114733743",
         "opts": Array [
           [Function],
         ],
-        "order": 0,
         "ssh_key_save_path": "$HOME/.ssh/bitrise_step_activate_ssh_key",
       },
     ],
