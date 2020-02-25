@@ -108,7 +108,10 @@ export default class StepLib {
     }
 
     return steps.map(({ cvs, ...rest }) => {
-      const stepInputs = inputs.filter(({ cvs: _cvs }) => _cvs === cvs).sort((a, b) => a.order - b.order);
+      const stepInputs = inputs
+        .filter(({ cvs: _cvs }) => _cvs === cvs)
+        .sort((a, b) => a.order - b.order)
+        .map(({ cvs, order, is_latest, objectID, ...input }) => input as StepInput);
 
       return {
         cvs,
