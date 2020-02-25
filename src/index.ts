@@ -20,7 +20,8 @@ const defaultStepOptions: AlgoliaSearchOptions = {
 
 const defaultInputOptions: AlgoliaSearchOptions = {
   ...defaultStepOptions,
-  attributesToRetrieve: ['cvs', 'order']
+  attributesToRetrieve: ['cvs', 'order'],
+  restrictSearchableAttributes: ['cvs']
 };
 
 export type Indices = {
