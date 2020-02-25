@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/bitrise-io/steplib-search/compare/v2.1.1...v2.1.2) (2020-02-25)
+
+
+### Bug Fixes
+
+* **defaults:** Fix input default searchable attrs ([04c0d25](https://github.com/bitrise-io/steplib-search/commit/04c0d259194c9b51a43a2834171ec476a6067f30))
+
 ## [2.1.1](https://github.com/bitrise-io/steplib-search/compare/v2.1.0...v2.1.1) (2020-02-25)
 
 
