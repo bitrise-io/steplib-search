@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/bitrise-io/steplib-search/compare/v2.1.0...v2.1.1) (2020-02-25)
+
+
+### Bug Fixes
+
+* **inputs:** Don't include extra fields in input descriptor ([c3b10f0](https://github.com/bitrise-io/steplib-search/commit/c3b10f07b35f0e8fc051261717f80059130b255a))
+
 # [2.1.0](https://github.com/bitrise-io/steplib-search/compare/v2.0.1...v2.1.0) (2020-02-17)
 
 
