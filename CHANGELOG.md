@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/bitrise-io/steplib-search/compare/v2.1.2...v2.2.0) (2020-03-02)
+
+
+### Features
+
+* **list:** Can filter deprecated steps ([e393dae](https://github.com/bitrise-io/steplib-search/commit/e393dae26768136f8d0d13876bd5f270ae6cf4eb))
+
 ## [2.1.2](https://github.com/bitrise-io/steplib-search/compare/v2.1.1...v2.1.2) (2020-02-25)
 
 
