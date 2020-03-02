@@ -145,7 +145,10 @@ describe(StepLib, () => {
           { latest: false, cvs: 'with-cvs@1.1.0' }
         ]
       });
-      const listPromise = steplib.list({ stepIds: ['without-cvs', 'with-cvs@1.0.0', 'with-cvs@1.1.0'] });
+      const listPromise = steplib.list({
+        stepIds: ['without-cvs', 'with-cvs@1.0.0', 'with-cvs@1.1.0'],
+        includeDeprecated: true
+      });
 
       const hits = await listPromise;
 
@@ -160,13 +163,21 @@ describe(StepLib, () => {
     });
 
     test('lists steps by project type', async () => {
-      steplib.list({ projectTypes: ['ios', 'android'] });
+      steplib.list({ projectTypes: ['ios', 'android'], includeDeprecated: true });
 
       expect(browseStepObjects).toHaveBeenCalledWith(
         expect.objectContaining({
           filters: '(step.project_type_tags:ios OR step.project_type_tags:android)'
         })
       );
+    });
+
+    test('lists non deprecated steps', () => {
+      steplib.list({ latestOnly: true, includeDeprecated: false });
+
+      const [[{ filters }]] = browseStepObjects.mock.calls;
+
+      expect(filters).toBe('is_latest:true AND is_deprecated=0');
     });
   });
 });
