@@ -6,6 +6,7 @@ export type SearchOptions = {
   latestOnly?: boolean;
   stepIds?: string[];
   includeInputs?: boolean;
+  includeDeprecated?: boolean;
   projectTypes?: string[];
   algoliaOptions?: AlgoliaSearchOptions;
 };
@@ -64,10 +65,15 @@ export default class StepLib {
     latestOnly = false,
     stepIds = [],
     includeInputs = false,
+    includeDeprecated = true,
     projectTypes = [],
     algoliaOptions
   }: SearchOptions = {}): Promise<Step[]> {
     let filterList = latestOnly ? ['is_latest:true'] : [];
+
+    if (!includeDeprecated) {
+      filterList.push('is_deprecated=0');
+    }
 
     if (algoliaOptions?.filters) {
       filterList.push(algoliaOptions.filters);
