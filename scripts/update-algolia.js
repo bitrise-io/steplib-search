@@ -76,7 +76,8 @@ function convertSpecToRecords(stepList) {
       const { steps: s, inputs: i } = Object.entries(versions).reduce(
         ({ steps, inputs }, [version, { inputs: stepInputs = [], ...step }]) => {
           const cvs = `${id}@${version}`,
-            isLatest = details.latest_version_number === version;
+            isLatest = details.latest_version_number === version,
+            isDeprecated = !!details.info.removal_date;
 
           const exctractedInputs = stepInputs.map((input, idx) => ({
             cvs,
@@ -95,6 +96,7 @@ function convertSpecToRecords(stepList) {
                 id,
                 version,
                 is_latest: isLatest,
+                is_deprecated: isDeprecated,
                 step
               }
             ]
