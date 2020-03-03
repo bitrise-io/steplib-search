@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/bitrise-io/steplib-search/compare/v2.2.0...v2.2.1) (2020-03-03)
+
+
+### Bug Fixes
+
+* **list:** Use browse for specific step listing too ([d9373c6](https://github.com/bitrise-io/steplib-search/commit/d9373c6fc933178aae8eefba554011c9d394b93d))
+
 # [2.2.0](https://github.com/bitrise-io/steplib-search/compare/v2.1.2...v2.2.0) (2020-03-02)
 
 
