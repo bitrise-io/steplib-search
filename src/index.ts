@@ -143,20 +143,18 @@ export default class StepLib {
     let result: Step[] = [];
 
     if (latestSteps.length > 0) {
-      const { hits } = await this.steps.search('', {
+      const steps = await this.browseAll<Step>(this.steps, {
         filters: `(${latestSteps.map(id => `id:${id}`).join(' OR ')}) AND is_latest:true`
       });
 
-      result = result.concat((hits as any) as Step[]);
+      result = result.concat(steps);
     }
 
     if (exactVersionSteps.length > 0) {
-      const { hits } = await this.steps.search('', {
-        ...queryParams,
+      const steps = await this.browseAll<Step>(this.steps, {
         filters: exactVersionSteps.map(id => `cvs:${id}`).join(' OR ')
       });
-
-      result = result.concat((hits as any) as Step[]);
+      result = result.concat(steps);
     }
 
     return result;
