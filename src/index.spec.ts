@@ -138,24 +138,25 @@ describe(StepLib, () => {
     });
 
     test('list steps by step id', async () => {
-      search.mockResolvedValueOnce({ hits: [{ latest: true, cvs: 'without-cvs@2.0.0' }] });
-      search.mockResolvedValueOnce({
-        hits: [
-          { latest: false, cvs: 'with-cvs@1.0.0' },
-          { latest: false, cvs: 'with-cvs@1.1.0' }
-        ]
-      });
       const listPromise = steplib.list({
         stepIds: ['without-cvs', 'with-cvs@1.0.0', 'with-cvs@1.1.0'],
         includeDeprecated: true
       });
 
+      const [[{ batch }]] = browseStepObjects.mock.calls;
+
+      batch([{ latest: true, cvs: 'without-cvs@2.0.0' }]);
+      batch([
+        { latest: false, cvs: 'with-cvs@1.0.0' },
+        { latest: false, cvs: 'with-cvs@1.1.0' }
+      ]);
+
       const hits = await listPromise;
 
-      expect(browseStepObjects).not.toHaveBeenCalled();
-      expect(search).toHaveBeenCalledTimes(2);
+      expect(browseStepObjects).toHaveBeenCalledTimes(2);
+      expect(search).not.toHaveBeenCalled();
 
-      const [[, { filters: latestFilters }], [, { filters: exactFilters }]] = search.mock.calls;
+      const [[{ filters: latestFilters }], [{ filters: exactFilters }]] = browseStepObjects.mock.calls;
       expect(latestFilters).toBe('(id:without-cvs) AND is_latest:true');
       expect(exactFilters).toBe('cvs:with-cvs@1.0.0 OR cvs:with-cvs@1.1.0');
 
