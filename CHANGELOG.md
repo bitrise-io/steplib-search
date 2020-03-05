@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/bitrise-io/steplib-search/compare/v2.2.1...v2.2.2) (2020-03-05)
+
+
+### Bug Fixes
+
+* **inputs:** Clear invalid input filters ([4e318d1](https://github.com/bitrise-io/steplib-search/commit/4e318d10bc2c4eb15d0deac782de810f4c289aad))
+
 ## [2.2.1](https://github.com/bitrise-io/steplib-search/compare/v2.2.0...v2.2.1) (2020-03-03)
 
 
