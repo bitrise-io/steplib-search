@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "algoliasearch": "^4.0.1"
+    "algoliasearch": "^4.0.3"
   },
   "publishConfig": {
     "access": "public"

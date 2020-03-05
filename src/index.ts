@@ -69,22 +69,23 @@ export default class StepLib {
     projectTypes = [],
     algoliaOptions
   }: SearchOptions = {}): Promise<Step[]> {
-    let filterList = latestOnly ? ['is_latest:true'] : [];
+    let stepFilterList = latestOnly ? ['is_latest:true'] : [],
+      inputFilterList = Array.from(stepFilterList);
 
     if (!includeDeprecated) {
-      filterList.push('is_deprecated=0');
+      stepFilterList.push('is_deprecated=0');
     }
 
     if (algoliaOptions?.filters) {
-      filterList.push(algoliaOptions.filters);
+      stepFilterList.push(algoliaOptions.filters);
     }
 
     if (projectTypes && projectTypes.length > 0) {
       const projectFilter = `(${projectTypes.map(t => `step.project_type_tags:${t}`).join(' OR ')})`;
-      filterList.push(projectFilter);
+      stepFilterList.push(projectFilter);
     }
 
-    const filters = filterList.join(' AND ');
+    const filters = stepFilterList.join(' AND ');
 
     const options = {
       ...algoliaOptions,
@@ -110,7 +111,8 @@ export default class StepLib {
       const filters = `(${steps.map(({ cvs }) => `cvs:${cvs}`).join(' OR ')})`;
       inputs = await this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query, filters });
     } else {
-      inputsPromise = this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query });
+      const filters = inputFilterList.join(' AND ');
+      inputsPromise = this.browseAll<StepInput>(this.inputs, { ...defaultInputOptions, ...options, query, filters });
       [steps, inputs] = await Promise.all([stepsPromise, inputsPromise]);
     }
 
