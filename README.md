@@ -164,7 +164,9 @@ You can use `projectTypes` to speecify which platfrom you are looking for
 const iosAndAndroidLatestSteps: Step[] = await stepLib.list({
   latestOnly: true,
   projectTypes: ['ios', 'android'],
-  attributesToRetrieve: ['cvs', 'step.project_type_tags']
+  algoliaOptions: {
+    attributesToRetrieve: ['cvs', 'step.project_type_tags']
+  }
 });
 ```
 
