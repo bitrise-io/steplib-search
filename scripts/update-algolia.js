@@ -23,6 +23,9 @@ async function perform() {
 
     console.log('Updating steps and inputs..');
     if (!isDryRun) {
+      console.log(steps.length, 'step versions');
+      console.log(inputs.length, 'step version inputs');
+
       await Promise.all([
         stepsIdx.replaceAllObjects(steps, { autoGenerateObjectIDIfNotExist: true }),
         inputsIdx.replaceAllObjects(inputs, { autoGenerateObjectIDIfNotExist: true })
