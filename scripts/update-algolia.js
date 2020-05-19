@@ -28,7 +28,7 @@ async function perform() {
 
       await Promise.all([
         stepsIdx.replaceAllObjects(steps, { autoGenerateObjectIDIfNotExist: true }),
-        inputsIdx.replaceAllObjects(inputs, { autoGenerateObjectIDIfNotExist: true })
+        inputsIdx.replaceAllObjects(inputs, { autoGenerateObjectIDIfNotExist: true }),
       ]);
     } else {
       console.log("Would've updated..");
@@ -36,11 +36,31 @@ async function perform() {
       console.log(inputs.length, 'step version inputs');
     }
 
+    await Promise.all([
+      assertIndexCount(stepsIdx, steps.length, 'Step index record counts not matching!'),
+      assertIndexCount(inputsIdx, inputs.length, 'Input index record counts not matching!'),
+    ]);
+
     console.log('Done..');
     process.exit(0);
   } catch (error) {
     console.log('Did an oopsie', error);
     process.exit(1);
+  }
+}
+
+async function assertIndexCount(idx, expected, msg) {
+  const { nbHits: actual } = await idx.search('', {
+    restrictSearchableAttributes: [],
+    attributesToRetrieve: [],
+    attributesToHighlight: [],
+    hitsPerPage: 0,
+    typoTolerance: 0,
+  });
+
+  if (actual !== expected) {
+    console.error('Index record count mismatch', { expected, actual });
+    throw new Error(msg);
   }
 }
 
@@ -58,7 +78,7 @@ function getSpecJson() {
 
 function getAlgoliaIndices() {
   const {
-    env: { ALGOLIA_APP_ID: appId, ALGOLIA_API_KEY: apiKey }
+    env: { ALGOLIA_APP_ID: appId, ALGOLIA_API_KEY: apiKey },
   } = process;
 
   if (!appId || !apiKey) {
@@ -86,7 +106,7 @@ function convertSpecToRecords(stepList) {
             cvs,
             order: idx,
             is_latest: isLatest,
-            ...input
+            ...input,
           }));
 
           return {
@@ -100,9 +120,9 @@ function convertSpecToRecords(stepList) {
                 version,
                 is_latest: isLatest,
                 is_deprecated: isDeprecated,
-                step
-              }
-            ]
+                step,
+              },
+            ],
           };
         },
         { inputs: [], steps: [] }
