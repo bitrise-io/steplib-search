@@ -5,12 +5,15 @@ const STEPS_INDEX_NAME = 'steplib_steps',
   INPUTS_INDEX_NAME = 'steplib_inputs';
 
 const isDryRun = process.env.DRY_RUN === 'true';
+const replaceIndices = process.env.REPLACE_INDICES === 'true';
 
 perform();
 
+const differenceBy = (array1, array2, key) => array1.filter((a) => !array2.some((b) => b[key] === a[key]));
+
 async function perform() {
   try {
-    isDryRun && console.log('Dry run..');
+    isDryRun && console.log('Dry run..\n');
 
     const { steps: stepList } = getSpecJson();
     const [stepsIdx, inputsIdx] = getAlgoliaIndices();
@@ -21,19 +24,37 @@ async function perform() {
       throw new Error('Parsed steps or inputs are empty, this is probably a mistake');
     }
 
-    console.log('Updating steps and inputs..');
-    if (!isDryRun) {
-      console.log(steps.length, 'step versions');
-      console.log(inputs.length, 'step version inputs');
+    console.log('Parsed..');
+    console.log(`${steps.length} step versions`);
+    console.log(`${inputs.length} step version inputs\n`);
 
-      await Promise.all([
-        stepsIdx.replaceAllObjects(steps, { autoGenerateObjectIDIfNotExist: true }),
-        inputsIdx.replaceAllObjects(inputs, { autoGenerateObjectIDIfNotExist: true }),
-      ]);
+    if (replaceIndices) {
+      console.log('Replacing steps and inputs..');
+      if (!isDryRun) {
+        await Promise.all([
+          stepsIdx.replaceAllObjects(steps, { autoGenerateObjectIDIfNotExist: true }),
+          inputsIdx.replaceAllObjects(inputs, { autoGenerateObjectIDIfNotExist: true }),
+        ]);
+      }
     } else {
-      console.log("Would've updated..");
-      console.log(steps.length, 'step versions');
-      console.log(inputs.length, 'step version inputs');
+      console.log('Updating steps and inputs..');
+      const [currentSteps, currentInputs] = await Promise.all([browseAll(stepsIdx), browseAll(inputsIdx)]);
+
+      const newSteps = differenceBy(steps, currentSteps, 'cvs'),
+        newInputs = differenceBy(inputs, currentInputs, 'cvs');
+
+      if (!isDryRun) {
+        await Promise.all([
+          newSteps.length ? stepsIdx.saveObjects(newSteps, { autoGenerateObjectIDIfNotExist: true }) : Promise.resolve,
+          newInputs.length
+            ? inputsIdx.saveObjects(newInputs, { autoGenerateObjectIDIfNotExist: true })
+            : Promise.resolve,
+        ]);
+      }
+
+      console.log('Added..');
+      console.log(`${newSteps.length} new step versions`);
+      console.log(`${newInputs.length} new step version inputs\n`);
     }
 
     await Promise.all([
@@ -47,6 +68,21 @@ async function perform() {
     console.log('Did an oopsie', error);
     process.exit(1);
   }
+}
+
+async function browseAll(idx) {
+  let result = [];
+
+  await idx.browseObjects({
+    query: '',
+    attributesToRetrieve: ['cvs'],
+    attributesToHighlight: [],
+    typoTolerance: false,
+    restrictSearchableAttributes: ['cvs'],
+    batch: (hits) => (result = result.concat(hits)),
+  });
+
+  return result;
 }
 
 async function assertIndexCount(idx, expected, msg) {
