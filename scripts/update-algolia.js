@@ -4,8 +4,11 @@ const algoliasearch = require('algoliasearch');
 const STEPS_INDEX_NAME = 'steplib_steps',
   INPUTS_INDEX_NAME = 'steplib_inputs';
 
-const isDryRun = process.env.DRY_RUN === 'true';
-const replaceIndices = process.env.REPLACE_INDICES === 'true';
+const { DRY_RUN, REPLACE_INDICES, INDEX_CHECK_DELAY_MS } = process.env;
+
+const isDryRun = DRY_RUN === 'true';
+const replaceIndices = REPLACE_INDICES === 'true';
+const indexCheckDelay = INDEX_CHECK_DELAY_MS ? parseInt(INDEX_CHECK_DELAY_MS, 10) : 5000;
 
 perform();
 
@@ -57,6 +60,10 @@ async function perform() {
       console.log(`${newInputs.length} new step version inputs\n`);
     }
 
+    console.log('Wait for Algolia to sync');
+    await new Promise((resolve) => setTimeout(resolve, indexCheckDelay));
+
+    console.log('Checking indices');
     await Promise.all([
       assertIndexCount(stepsIdx, steps.length, 'Step index record counts not matching!'),
       assertIndexCount(inputsIdx, inputs.length, 'Input index record counts not matching!'),
