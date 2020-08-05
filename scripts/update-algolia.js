@@ -1,6 +1,8 @@
 const { readFileSync } = require('fs');
 const algoliasearch = require('algoliasearch');
 
+const { convertSpecToRecords, differenceBy } = require('./utils');
+
 const STEPS_INDEX_NAME = 'steplib_steps',
   INPUTS_INDEX_NAME = 'steplib_inputs';
 
@@ -11,8 +13,6 @@ const replaceIndices = REPLACE_INDICES === 'true';
 const indexCheckDelay = INDEX_CHECK_DELAY_MS ? parseInt(INDEX_CHECK_DELAY_MS, 10) : 5000;
 
 perform();
-
-const differenceBy = (array1, array2, key) => array1.filter((a) => !array2.some((b) => b[key] === a[key]));
 
 async function perform() {
   try {
@@ -134,45 +134,4 @@ function getAlgoliaIndices() {
     inputsIdx = client.initIndex(INPUTS_INDEX_NAME);
 
   return [stepsIdx, inputsIdx];
-}
-
-function convertSpecToRecords(stepList) {
-  return Object.entries(stepList).reduce(
-    ({ steps, inputs }, [id, { versions, ...details }]) => {
-      const { steps: s, inputs: i } = Object.entries(versions).reduce(
-        ({ steps, inputs }, [version, { inputs: stepInputs = [], ...step }]) => {
-          const cvs = `${id}@${version}`,
-            isLatest = details.latest_version_number === version,
-            isDeprecated = !!details.info.removal_date;
-
-          const exctractedInputs = stepInputs.map((input, idx) => ({
-            cvs,
-            order: idx,
-            is_latest: isLatest,
-            ...input,
-          }));
-
-          return {
-            inputs: [...inputs, ...exctractedInputs],
-            steps: [
-              ...steps,
-              {
-                ...details,
-                cvs,
-                id,
-                version,
-                is_latest: isLatest,
-                is_deprecated: isDeprecated,
-                step,
-              },
-            ],
-          };
-        },
-        { inputs: [], steps: [] }
-      );
-
-      return { steps: steps.concat(s), inputs: inputs.concat(i) };
-    },
-    { inputs: [], steps: [] }
-  );
 }
