@@ -48,8 +48,8 @@ const convertSpecToRecords = (stepList) =>
     { inputs: [], steps: [] }
   );
 const differenceBy = (array1, array2, key) => array1.filter((a) => !array2.some((b) => b[key] === a[key]));
-const getChangedSteps = (prevSteps, newSteps, compareBy) => {
-  return newSteps.filter((step) => {
+const getChangedSteps = (prevSteps, newSteps, compareBy) =>
+  newSteps.filter((step) => {
     const prevStep = prevSteps.find(({ cvs }) => step.cvs === cvs);
 
     if (!prevStep) {
@@ -59,9 +59,10 @@ const getChangedSteps = (prevSteps, newSteps, compareBy) => {
     const stepToCompare = pick(step, compareBy),
       prevStepToCompare = pick(prevStep, compareBy);
 
-    return !isEqual(stepToCompare, prevStepToCompare);
+    const hasChange = !isEqual(stepToCompare, prevStepToCompare);
+
+    return hasChange;
   });
-};
 
 module.exports = {
   pick,

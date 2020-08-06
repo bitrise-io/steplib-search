@@ -1,7 +1,8 @@
 const { readFileSync } = require('fs');
 const algoliasearch = require('algoliasearch');
+const compact = require('lodash.compact');
 
-const { convertSpecToRecords, differenceBy } = require('./utils');
+const { convertSpecToRecords, differenceBy, getChangedSteps } = require('./utils');
 
 const STEPS_INDEX_NAME = 'steplib_steps',
   INPUTS_INDEX_NAME = 'steplib_inputs';
@@ -40,28 +41,49 @@ async function perform() {
         ]);
       }
     } else {
+      const compareChangedStepsBy = ['info', 'step.asset_urls'];
+
       console.log('Updating steps and inputs..');
-      const [currentSteps, currentInputs] = await Promise.all([browseAll(stepsIdx), browseAll(inputsIdx)]);
+      const [currentSteps, currentInputs] = await Promise.all([
+        browseAll(stepsIdx, ['cvs', ...compareChangedStepsBy]),
+        browseAll(inputsIdx),
+      ]);
 
       const newSteps = differenceBy(steps, currentSteps, 'cvs'),
         newInputs = differenceBy(inputs, currentInputs, 'cvs');
 
+      const changedSteps = getChangedSteps(currentSteps, steps, compareChangedStepsBy);
+
+      const changedStepsWithObjectID = changedSteps.map((step) => {
+        const { objectID } = currentSteps.find(({ cvs }) => step.cvs === cvs);
+
+        return {
+          ...step,
+          objectID,
+        };
+      });
+
+      const stepsToUpdate = newSteps.concat(changedStepsWithObjectID);
+
       if (!isDryRun) {
-        await Promise.all([
-          newSteps.length ? stepsIdx.saveObjects(newSteps, { autoGenerateObjectIDIfNotExist: true }) : Promise.resolve,
-          newInputs.length
-            ? inputsIdx.saveObjects(newInputs, { autoGenerateObjectIDIfNotExist: true })
-            : Promise.resolve,
-        ]);
+        const stepsPromise =
+            stepsToUpdate.length && stepsIdx.saveObjects(stepsToUpdate, { autoGenerateObjectIDIfNotExist: true }),
+          inputsPromise =
+            newInputs.length && inputsIdx.saveObjects(newInputs, { autoGenerateObjectIDIfNotExist: true });
+        await Promise.all(compact([stepsPromise, inputsPromise]));
       }
 
       console.log('Added..');
       console.log(`${newSteps.length} new step versions`);
-      console.log(`${newInputs.length} new step version inputs\n`);
+      console.log(`${newInputs.length} new step version inputs`);
+      console.log('Updated..');
+      console.log(`${changedSteps.length} step version\n`);
     }
 
-    console.log('Wait for Algolia to sync');
-    await new Promise((resolve) => setTimeout(resolve, indexCheckDelay));
+    if (!isDryRun) {
+      console.log('Wait for Algolia to sync');
+      await new Promise((resolve) => setTimeout(resolve, indexCheckDelay));
+    }
 
     console.log('Checking indices');
     await Promise.all([
@@ -77,12 +99,12 @@ async function perform() {
   }
 }
 
-async function browseAll(idx) {
+async function browseAll(idx, attributesToRetrieve = ['cvs']) {
   let result = [];
 
   await idx.browseObjects({
     query: '',
-    attributesToRetrieve: ['cvs'],
+    attributesToRetrieve,
     attributesToHighlight: [],
     typoTolerance: false,
     restrictSearchableAttributes: ['cvs'],
