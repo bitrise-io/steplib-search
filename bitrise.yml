@@ -16,5 +16,8 @@ workflows:
                 #!/usr/bin/env bash
                 set -ex
 
+                cd scripts
                 yarn install --prod
+                cd ..
+
                 yarn update-algolia "$SPEC_JSON_PATH"

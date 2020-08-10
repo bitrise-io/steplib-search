@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Script utils convertSpecToRecords 1`] = `
+Object {
+  "inputs": Array [
+    Object {
+      "cvs": "test-step@1.0.0",
+      "file_path": "",
+      "is_latest": true,
+      "opts": Object {
+        "category": "",
+        "description": "",
+        "is_dont_change_value": false,
+        "is_expand": true,
+        "is_required": true,
+        "is_sensitive": false,
+        "is_template": false,
+        "skip_if_empty": false,
+        "summary": "Some input summary",
+        "title": "Some input",
+        "unset": false,
+      },
+      "order": 0,
+    },
+  ],
+  "steps": Array [
+    Object {
+      "cvs": "test-step@1.0.0",
+      "id": "test-step",
+      "info": Object {
+        "asset_urls": Object {
+          "icon.svg": "http://step-icon.url",
+        },
+        "maintainer": "community",
+      },
+      "is_deprecated": false,
+      "is_latest": true,
+      "latest_version_number": "1.0.0",
+      "step": Object {
+        "asset_urls": Object {
+          "icon.svg": "http://step-icon.url",
+        },
+        "deps": Object {
+          "apt_get": Array [
+            Object {
+              "bin_name": "aws",
+              "name": "awscli",
+            },
+          ],
+          "brew": Array [
+            Object {
+              "bin_name": "aws",
+              "name": "awscli",
+            },
+          ],
+        },
+        "description": "Test Step description",
+        "is_always_run": false,
+        "is_requires_admin_user": true,
+        "is_skippable": false,
+        "outputs": Array [
+          Object {
+            "S3_UPLOAD_STEP_URL": "",
+            "opts": Object {
+              "category": "",
+              "description": "",
+              "is_dont_change_value": true,
+              "is_expand": false,
+              "is_required": true,
+              "is_sensitive": false,
+              "is_template": false,
+              "skip_if_empty": false,
+              "summary": "Some output summary",
+              "title": "Some output",
+              "unset": false,
+            },
+          },
+        ],
+        "published_at": "2016-09-16T16:24:30.0+01:00",
+        "run_if": "",
+        "source": Object {
+          "commit": "abcd1234",
+          "git": "https://github.url/maintainer/test-step.git",
+        },
+        "source_code_url": "https://github.url/maintainer/test-step",
+        "summary": "Test Step summary",
+        "support_url": "http://step-support.url",
+        "timeout": 0,
+        "title": "Test Step",
+        "type_tags": Array [
+          "deploy",
+        ],
+        "website": "https://step-website.url",
+      },
+      "version": "1.0.0",
+    },
+  ],
+}
+`;
