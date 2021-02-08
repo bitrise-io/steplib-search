@@ -139,7 +139,7 @@ describe(StepLib, () => {
 
     test('list steps by step id', async () => {
       const listPromise = steplib.list({
-        stepIds: ['without-cvs', 'with-cvs@1.0.0', 'with-cvs@1.1.0'],
+        stepIds: ['without-cvs', 'with-cvs@1.0.0', 'with-cvs@1.1.0', 'with-partial-cvs@2'],
         includeDeprecated: true
       });
 
@@ -150,15 +150,17 @@ describe(StepLib, () => {
         { latest: false, cvs: 'with-cvs@1.0.0' },
         { latest: false, cvs: 'with-cvs@1.1.0' }
       ]);
+      batch([{ latest: true, cvs: 'with-partial-cvs@2.1.0' }]);
 
       const hits = await listPromise;
 
-      expect(browseStepObjects).toHaveBeenCalledTimes(2);
+      expect(browseStepObjects).toHaveBeenCalledTimes(3);
       expect(search).not.toHaveBeenCalled();
 
-      const [[{ filters: latestFilters }], [{ filters: exactFilters }]] = browseStepObjects.mock.calls;
+      const [[{ filters: latestFilters }], [{ filters: exactFilters }], [{ filters: partialFilters }]] = browseStepObjects.mock.calls;
       expect(latestFilters).toBe('(id:without-cvs) AND is_latest:true');
       expect(exactFilters).toBe('cvs:with-cvs@1.0.0 OR cvs:with-cvs@1.1.0');
+      expect(partialFilters).toBe('id:with-partial-cvs');
 
       expect(hits).toMatchSnapshot();
     });
