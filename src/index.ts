@@ -50,6 +50,8 @@ export default class StepLib {
   private steps: SearchIndex;
   private inputs: SearchIndex;
 
+  private FULL_VERSION_REGEX = /\d+\.\d+\.\d+/
+
   constructor(
     applicationID: string,
     apiKey: string,
@@ -131,15 +133,16 @@ export default class StepLib {
   }
 
   async searchSteps(stepIds: string[], queryParams: object = {}): Promise<Step[]> {
-    const [latestSteps, exactVersionSteps] = stepIds.reduce(
-      ([latest, exactVersion], id) => {
+    const [latestSteps, exactVersionSteps, partialVersionSteps] = stepIds.reduce(
+      ([latest, exactVersion, partialVersion], id) => {
         if (id.includes('@')) {
-          return [latest, [...exactVersion, id]];
+          const [stepId, version] = id.split('@')
+          return this.FULL_VERSION_REGEX.test(version) ? [latest, [...exactVersion, id], partialVersion] : [latest, exactVersion, partialVersion.add(stepId)];
         }
 
-        return [[...latest, id], exactVersion];
+        return [[...latest, id], exactVersion, partialVersion];
       },
-      [[] as string[], [] as string[]]
+      [[] as string[], [] as string[], new Set<string>()]
     );
 
     let result: Step[] = [];
@@ -156,6 +159,15 @@ export default class StepLib {
       const steps = await this.browseAll<Step>(this.steps, {
         filters: exactVersionSteps.map(id => `cvs:${id}`).join(' OR ')
       });
+
+      result = result.concat(steps);
+    }
+
+    if (partialVersionSteps.size > 0) {
+      const steps = await this.browseAll<Step>(this.steps, {
+        filters: Array.from(partialVersionSteps).map(id => `id:${id}`).join(' OR ')
+      });
+
       result = result.concat(steps);
     }
 

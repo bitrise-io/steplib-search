@@ -14,6 +14,10 @@ Array [
     "cvs": "with-cvs@1.1.0",
     "latest": false,
   },
+  Object {
+    "cvs": "with-partial-cvs@2.1.0",
+    "latest": true,
+  },
 ]
 `;
 
