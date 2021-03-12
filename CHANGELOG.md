@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/bitrise-io/steplib-search/compare/v2.2.2...v2.3.0) (2021-03-12)
+
+
+### Features
+
+* **steps:** improve search for incomplete step versions ([1428c33](https://github.com/bitrise-io/steplib-search/commit/1428c338236f4025016f85a4a783d7a2d3d3b283))
+
 ## [2.2.2](https://github.com/bitrise-io/steplib-search/compare/v2.2.1...v2.2.2) (2020-03-05)
 
 
