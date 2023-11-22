@@ -17,6 +17,7 @@ workflows:
                 set -ex
 
                 cd scripts
+                corepack enable
                 yarn install --prod
                 cd ..
 
