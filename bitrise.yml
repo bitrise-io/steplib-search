@@ -9,15 +9,12 @@ workflows:
       - ALGOLIA_API_KEY: '$ALGOLIA_API_KEY'
       - DRY_RUN: '$DRY_RUN'
     steps:
-      - script@1.1.6:
-          title: Update algolia steps based on spec.json
+      - yarn@0:
           inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                set -ex
-
-                cd scripts
-                yarn install --prod
-                cd ..
-
-                yarn update-algolia "$SPEC_JSON_PATH"
+          - workdir: ./scripts
+          - command: install
+          - args: --prod
+      - yarn@0:
+          inputs:
+          - command: update-algolia
+          - args: $SPEC_JSON_PATH
