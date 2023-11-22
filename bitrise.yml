@@ -4,21 +4,17 @@ project_type: other
 workflows:
   update-algolia:
     envs:
-      - SPEC_JSON_PATH: '$SPEC_JSON_PATH'
-      - ALGOLIA_APP_ID: '$ALGOLIA_APP_ID'
-      - ALGOLIA_API_KEY: '$ALGOLIA_API_KEY'
-      - DRY_RUN: '$DRY_RUN'
+    - SPEC_JSON_PATH: '$SPEC_JSON_PATH'
+    - ALGOLIA_APP_ID: '$ALGOLIA_APP_ID'
+    - ALGOLIA_API_KEY: '$ALGOLIA_API_KEY'
+    - DRY_RUN: '$DRY_RUN'
     steps:
-      - script@1.1.6:
-          title: Update algolia steps based on spec.json
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                set -ex
-
-                cd scripts
-                corepack enable
-                yarn install --prod
-                cd ..
-
-                yarn update-algolia "$SPEC_JSON_PATH"
+    - yarn@0:
+        inputs:
+        - workdir: ./scripts
+        - command: install
+        - args: --prod
+    - yarn@0:
+        inputs:
+        - command: update-algolia
+        - args: $SPEC_JSON_PATH
