@@ -41,7 +41,7 @@ async function perform() {
         ]);
       }
     } else {
-      const compareChangedStepsBy = ['info', 'step.asset_urls'];
+      const compareChangedStepsBy = ['info', 'is_latest', 'latest_version_number', 'step.asset_urls'];
 
       console.log('Updating steps and inputs..');
       const [currentSteps, currentInputs] = await Promise.all([
