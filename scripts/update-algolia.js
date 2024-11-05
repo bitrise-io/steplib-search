@@ -107,7 +107,7 @@ async function browseAll(idx, attributesToRetrieve = ['cvs']) {
     attributesToRetrieve,
     attributesToHighlight: [],
     typoTolerance: false,
-    restrictSearchableAttributes: ['cvs'],
+    restrictSearchableAttributes: ['cvs', 'id'],
     batch: (hits) => (result = result.concat(hits)),
   });
 
