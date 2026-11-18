@@ -1,5 +1,6 @@
 const { writeFileSync } = require('fs');
-const http = require('http');
+const https = require('https');
+const zlib = require('zlib');
 
 justDoIt();
 
@@ -18,14 +19,17 @@ async function justDoIt() {
 
 async function getSpecJson() {
   return new Promise((resolve, reject) => {
-    http.get('http://bitrise-steplib-collection.s3.amazonaws.com/spec.json', res => {
+    // The spec is ~27 MB as plain JSON and ~1 MB gzipped, so ask for gzip.
+    const options = { headers: { 'Accept-Encoding': 'gzip' } };
+    https.get('https://steplib.bitrise.io/spec.json', options, res => {
+      const body = res.headers['content-encoding'] === 'gzip' ? res.pipe(zlib.createGunzip()) : res;
       let rawData = '';
 
-      res.on('data', chunk => {
+      body.on('data', chunk => {
         rawData += chunk;
       });
 
-      res.on('end', () => {
+      body.on('end', () => {
         try {
           const sizeInMb = (rawData.length / 1048576).toFixed(2);
           console.log('spec.json size:', `${sizeInMb} MB`);
